@@ -47,7 +47,6 @@ void loop() {
   if (Serial.available() > 0) {
      // read the incoming byte:
      incomingByte = Serial.readString();
-     // say what you got:
      val = incomingByte.toInt();
   }
   switch(val) {
@@ -55,7 +54,7 @@ void loop() {
       dim_state();
       break;
      case 1: //don't reset val, this state persists
-      full_bright_state();
+      full_bright_state(255, 255, 255, 255);
       break;
     case 2:
       full_strip_lightning();
@@ -78,10 +77,47 @@ void loop() {
       mixed_strip_lightning();
       val = 0;
       break;
+    case 7: //don't reset val, this state persists
+      full_bright_state(255, 0, 0, 0);
+      break;
+    case 8: //don't reset val, this state persists
+      full_bright_state(0, 255, 0, 0);
+      break;
+    case 9: //don't reset val, this state persists
+      full_bright_state(0, 0, 255, 0);
+      break;
+    case 10: //don't reset val, this state persists
+      full_bright_state(255, 0, 0, 0);
+      delay(1000);
+      full_bright_state(0, 255, 0, 0);
+      delay(1000);
+      full_bright_state(0, 0, 255, 0);
+      delay(1000);
+      break;
+    case 11: //don't reset val, this state persists
+      full_bright_state(255, 0, 255, 0);
+      break;
+     case 12: // fast rainbow
+      rainbow(1,1);  //don't reset val, this state persists
+      break;
+    case 13: // medium rainbow
+      rainbow(5,1);  //don't reset val, this state persists
+      break;
+    case 14: // slow rainbow
+      rainbow(15,1); //don't reset val, this state persists
+      break;
     default:
-      dim_state();
+      off();
       break;
   }
+}
+
+void off() {
+  uint16_t i;
+  for(i = 0; i < strip.numPixels(); i++) {
+      strip.setPixelColor(i, strip.Color(0,0,0,0));
+  }
+  strip.show();
 }
 
 void dim_state() {
@@ -95,21 +131,16 @@ void dim_state() {
   strip.show();
 }
 
-void full_bright_state() {
+void full_bright_state(int r, int g, int b, int gm) {
   uint16_t i;
   for(i = 0; i < strip.numPixels(); i++) {
-      strip.setPixelColor(i, strip.Color(100,100,100,255));
+      strip.setPixelColor(i, strip.Color(r, g, b, gm));
   }
   strip.show();
 }
 
 void lightning() {
-  uint16_t i;
-  for(i = 0; i < strip.numPixels(); i++) {
-    //strip.setPixelColor(i, strip.Color(255,180,0,10)); // Nice yellow color
-    strip.setPixelColor(i, strip.Color(255,255,255,255));
-  }
-  strip.show();
+  full_bright_state(255, 255, 255, 255);
 }
 
 void lightning_top_third() {
@@ -245,6 +276,21 @@ void strip_bottom_lightning() {
   dim_state();
 }
 
+// Input a value 0 to 255 to get a color value.
+// The colours are a transition r - g - b - back to r.
+uint32_t Wheel(byte WheelPos) {
+  WheelPos = 255 - WheelPos;
+  if(WheelPos < 85) {
+    return strip.Color(255 - WheelPos * 3, 0, WheelPos * 3,0);
+  }
+  if(WheelPos < 170) {
+    WheelPos -= 85;
+    return strip.Color(0, WheelPos * 3, 255 - WheelPos * 3,0);
+  }
+  WheelPos -= 170;
+  return strip.Color(WheelPos * 3, 255 - WheelPos * 3, 0,0);
+}
+
 uint8_t red(uint32_t c) {
   return (c >> 8);
 }
@@ -255,4 +301,24 @@ uint8_t blue(uint32_t c) {
   return (c);
 }
 
+void rainbow(uint8_t wait, int rainbowLoops) {
+  float fadeMax = 100.0;
+  int fadeVal = 100;
+  uint32_t wheelVal;
+  int redVal, greenVal, blueVal;
+
+  for(int k = 0 ; k < rainbowLoops ; k ++){ 
+    for(int j=0; j<256; j++) { // 5 cycles of all colors on wheel
+      for(int i=0; i< strip.numPixels(); i++) {
+        wheelVal = Wheel(((i * 256 / strip.numPixels()) + j) & 255);
+        redVal = red(wheelVal) * float(fadeVal/fadeMax);
+        greenVal = green(wheelVal) * float(fadeVal/fadeMax);
+        blueVal = blue(wheelVal) * float(fadeVal/fadeMax);
+        strip.setPixelColor( i, strip.Color( redVal, greenVal, blueVal ) );
+      }
+      strip.show();
+      delay(wait);
+    }
+  }
+}
 
