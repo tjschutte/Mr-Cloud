@@ -20,7 +20,7 @@ exports.postIndex = (req, res) => {
   console.log(req.body.mode.mode);
   res.render('home.html');
   var p = proc('python2.7', ['cloud.py', req.body.mode.mode]);
-
+/*
   p.stdout.on('data', (data) => {
     console.log('stdout: ' + data);
    });
@@ -28,5 +28,5 @@ exports.postIndex = (req, res) => {
   p.on('close', (code) => {
     console.log('Exited with code: ' + code);
   });
-
+*/
 }
