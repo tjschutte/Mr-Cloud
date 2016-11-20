@@ -2,25 +2,12 @@
  * Module dependencies.
  */
 const express = require('express');
-
-/*
- * Some serialport initialization stuff first
- */
-var serialport = require('serialport'),// include the library
-SerialPort = serialport.SerialPort,    // make a local instance of it
-portName = '/dev/tty0';
-
-var data = '2\n';                          // latest data
-var servi = require('servi');          // include the servi library
-var myPort = new SerialPort(portName, {
-  baudRate: 9600
-});
+const bodyParser = require('body-parser');
 
 /**
  * Controllers (route handlers).
  */
 const homeController = require('./controllers/home');
-
 
 /**
  * Create Express server.
@@ -30,17 +17,24 @@ app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.engine('html', require('ejs').renderFile);
 
+/** bodyParser.urlencoded(options)
+* Parses the text as URL encoded data (which is how browsers tend to send form data from regular forms set to POST)
+* and exposes the resulting object (containing the keys and values) on req.body
+*/
+app.use(bodyParser.urlencoded({
+  extended: true
+}));
+
+/**bodyParser.json(options)
+* Parses the text as JSON and exposes the resulting object on req.body.
+*/
+app.use(bodyParser.json());
+
 /**
  * Primary app routes.
  */
 app.get('/', homeController.index);
 app.post('/', homeController.postIndex);
-app.route('/data', sendToSerial);
-
-function sendToSerial(data) {
-  console.log("sending to serial: " + data);
-  myPort.write(data);
-}
 
 /**
  * Start Express server.
