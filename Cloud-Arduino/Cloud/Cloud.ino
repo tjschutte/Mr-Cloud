@@ -31,6 +31,7 @@ int gamma[] = {
 
 String incomingByte;   // for incoming serial data
 int val = 0;
+int temp = 0;
 void setup() {
   Serial.begin(9600);
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
@@ -44,6 +45,7 @@ void setup() {
 }
 
 void loop() {
+  temp = val; // store current value to restore
   if (Serial.available() > 0) {
      // read the incoming byte:
      incomingByte = Serial.readString();
@@ -58,24 +60,24 @@ void loop() {
       break;
     case 2:
       full_strip_lightning();
-      val = 0;
+      val = temp;
       break;
     case 3:
       strip_top_lightning();
-      val = 0;
+      val = temp;
       break;
     case 4:
       strip_middle_lightning();
-      val = 0;
+      val = temp;
       break;
     case 5:
       strip_bottom_lightning();
-      val = 0;
+      val = temp;
       break;
     case 6:
       mixed_strip_lightning();
       mixed_strip_lightning();
-      val = 0;
+      val = temp;
       break;
     case 7: //don't reset val, this state persists
       full_bright_state(255, 0, 0, 0);
@@ -105,6 +107,18 @@ void loop() {
       break;
     case 14: // slow rainbow
       rainbow(15,1); //don't reset val, this state persists
+      break;
+    case 15: // Yellow 
+      full_bright_state(255,200,0,40);
+      break;
+    case 16: // orange (sunrise)
+      full_bright_state(255,90,0,20);
+      break;
+    case 17: // orange (sunset)
+      full_bright_state(255,35,0,10);
+      break;
+    case 18: // light blue (rain)
+      full_bright_state(0,35,255,40);
       break;
     default:
       off();
