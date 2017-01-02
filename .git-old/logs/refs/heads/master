@@ -1,5 +1,0 @@
-0000000000000000000000000000000000000000 00671cdbb571cbd9ac0ee1324171fab1252610fc Tom Schutte <tjschutte@wisc.edu> 1477164741 +0000	clone: from https://github.com/tjschutte/Mr-Cloud.git
-00671cdbb571cbd9ac0ee1324171fab1252610fc 2c52d1b51c373be587cb2697e63b1cd584ecd8e6 Tom Schutte <tjschutte@wisc.edu> 1477843477 +0000	pull: Fast-forward
-2c52d1b51c373be587cb2697e63b1cd584ecd8e6 4a6afa98d58b0c4476ddf645dc7009a5e361cd5d Tom Schutte <tjschutte@wisc.edu> 1477844787 +0000	commit: Updating the file structure to be more clear what runs on which device.
-4a6afa98d58b0c4476ddf645dc7009a5e361cd5d a926b41cc7e9e4200ac1df35d1d0ac18b0a770fb Tom Schutte <tjschutte@wisc.edu> 1479608847 +0000	pull: Fast-forward
-a926b41cc7e9e4200ac1df35d1d0ac18b0a770fb 2b78fde72a3166cf36cf175e9f26dc15e424a219 Tom Schutte <tjschutte@wisc.edu> 1479613143 +0000	commit: Made the pi and arduino work together.
