@@ -3,12 +3,17 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-//const serialport = require('serialport');
+const serialport = require('serialport');
+const schedule = require('node-schedule');
 
-/**
- * Controllers (route handlers).
- */
-const homeController = require('./controllers/home');
+const port = new serialport('/dev/ttyUSB0', 9600);
+
+/* seconds minutes, hours, day-of-month month day-of-week */
+/* this runs an event every 15 seconds */
+var event = schedule.scheduleJob('*/15 * * * * *', function(){
+  console.log('Running scheduled job');
+  port.write('2');
+});
 
 /**
  * Create Express server.
@@ -34,8 +39,17 @@ app.use(bodyParser.json());
 /**
  * Primary app routes.
  */
-app.get('/', homeController.index);
-app.post('/', homeController.postIndex);
+app.get('/', function getIndex(req, res) {
+  console.log('GET: /index');
+  res.render('home.html'); 
+});
+
+app.post('/', function postIndex(req, res) {
+  console.log('POST: /index');
+  console.log('Changing mode to: ' + req.body.mode.mode);
+  port.write(req.body.mode.mode);
+  res.render('home.html');
+});
 
 /**
  * Start Express server.
