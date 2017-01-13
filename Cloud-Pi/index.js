@@ -7,10 +7,11 @@ const serialport = require('serialport');
 const schedule = require('node-schedule');
 const weather = require('openweather-node');
 const port = new serialport('/dev/ttyUSB0', 9600);
+const sleep = require('sleep');
 
 // Global variable to turn checking weather on and off
-var getWeather = true;
-var quietHours = true;
+var getWeather = (process.argv[2] == 'debug') ? false : true;
+var quietHours = (process.argv[2] == 'debug') ? false : true;
 
 // Other configuration variables
 var quietStart = 22;
@@ -97,16 +98,42 @@ app.post('/', function postIndex(req, res) {
   console.log('POST: /index');
   console.log('Changing mode to: ' + req.body.mode.mode);
 
-  if (req.body.mode.mode == 1000)
+  if (req.body.mode.mode == 1000) {
     getWeather = false;
-  else if (req.body.mode.mode == 1001)
+    console.log('Turning weather updates off');
+  }
+  else if (req.body.mode.mode == 1001) {
     getWeather = true;
-  else if (req.body.mode.mode == 2000)
+    console.log('Turning weather updates on');
+  }
+  else if (req.body.mode.mode == 2000) {
     quietHours = false;
-  else if (req.body.mode.mode == 2001)
+    console.log('Turning quiet hours off');
+  }
+  else if (req.body.mode.mode == 2001) {
     quietHours = true;
-  else
+    console.log('Turning quiet hours on');
+  }
+  else if (req.body.mode.mode == 255) {
+    var color = req.body.mode.color;
+    var red = parseInt(color.substring(1, 3), 16);
+    var green = parseInt(color.substring(3, 5), 16);
+    var blue = parseInt(color.substring(5, 7), 16);
+    console.log('custom color: ' + req.body.mode.color);
+    port.write('255');
+    sleep.usleep(100000);
+    port.write(red.toString());
+    console.log('red: ' + red);
+    sleep.usleep(100000);
+    port.write(green.toString());
+    console.log('green: ' + green);
+    sleep.usleep(100000);
+    port.write(blue.toString());
+    console.log('blue: ' + blue);
+  }
+  else {
     port.write(req.body.mode.mode);
+  }
 
   res.render('home.html');
 });

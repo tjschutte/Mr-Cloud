@@ -120,6 +120,24 @@ void loop() {
     case 18: // light blue (rain)
       full_bright_state(0,35,255,40);
       break;
+    case 255:
+      while(!(Serial.available() > 0)) ;
+      // read the incoming byte:
+      incomingByte = Serial.readString();
+      r = incomingByte.toInt();
+      
+      while(!(Serial.available() > 0)) ;
+      // read the incoming byte:
+      incomingByte = Serial.readString();
+      g = incomingByte.toInt();
+      
+      while(!(Serial.available() > 0)) ;
+      // read the incoming byte:
+      incomingByte = Serial.readString();
+      b = incomingByte.toInt();
+      
+      full_bright_state(r, g, b, 0);
+      break;
     default:
       off();
       break;
