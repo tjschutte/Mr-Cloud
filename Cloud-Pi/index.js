@@ -3,10 +3,10 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-const serialport = require('serialport');
+//const serialport = require('serialport');
 const schedule = require('node-schedule');
 const weather = require('openweather-node');
-const port = new serialport('/dev/ttyUSB0', 9600);
+//const port = new serialport('/dev/ttyUSB0', 9600);
 
 // Global variable to turn checking weather on and off
 var getWeather = true;
@@ -34,7 +34,7 @@ var event = schedule.scheduleJob('*/60 * * * * *', function() {
       var sunrise = new Date(1000 * json.values.sys.sunrise);
       var sunset = new Date(1000 * json.values.sys.sunset);
       data = '0';
-  
+
       if (currentHour == sunrise.getHours() && currentMinute >= sunrise.getMinutes()) {
         console.log('sunrise');
         data = '16'; //color for sunrise
@@ -53,13 +53,13 @@ var event = schedule.scheduleJob('*/60 * * * * *', function() {
         }
       }
       console.log('Changing mode to: ' + data);
-      port.write(data);
+      //port.write(data);
     });
   }
   // If it is past bedtime, overwrite everything
   if (quietHours && (currentHour >= quietStart || currentHour <= quietEnd)) {
     console.log('Lights out');
-    port.write('-1');
+    //port.write('-1');
   }
 
 });
@@ -90,7 +90,7 @@ app.use(bodyParser.json());
  */
 app.get('/', function getIndex(req, res) {
   console.log('GET: /index');
-  res.render('home.html'); 
+  res.render('home.html');
 });
 
 app.post('/', function postIndex(req, res) {
@@ -105,8 +105,20 @@ app.post('/', function postIndex(req, res) {
     quietHours = false;
   else if (req.body.mode.mode == 2001)
     quietHours = true;
+  else if (req.body.mode.mode == 255) {
+    var color = req.body.mode.color;
+    var red = parseInt(color.substring(1, 3), 16);
+    var green = parseInt(color.substring(3, 5), 16);
+    var blue = parseInt(color.substring(5, 7), 16);
+    console.log('custom color: ' + req.body.mode.color + '\nred: ' + red + '\ngreen: ' + green + "\nblue: " + blue)
+    //port.write(req.body.mode.mode);
+    //port.write(red);
+    //port.write(green);
+    //port.write(blue);
+  }
   else
-    port.write(req.body.mode.mode);
+    console.log('port write');
+    //port.write(req.body.mode.mode);
 
   res.render('home.html');
 });
