@@ -30,8 +30,7 @@ int gamma[] = {
   215,218,220,223,225,228,231,233,236,239,241,244,247,249,252,255 };
 
 String incomingByte;   // for incoming serial data
-int val = 0;
-int temp = 0;
+String temp;
 bool skip = true;
 int r, g, b;
 void setup() {
@@ -47,7 +46,7 @@ void setup() {
 }
 
 void loop() {
-  temp = val; // store current value to restore
+  temp = incomingByte; // store current value to restore
   if (!skip) {
     while(!(Serial.available() > 0)) ;
   }
@@ -64,24 +63,24 @@ void loop() {
     full_bright_state(255, 255, 255, 255);
   } else if (incomingByte == "2") {
     full_strip_lightning();
-    val = temp;
+    incomingByte = temp;
     skip = true;
   } else if (incomingByte == "3") {
     strip_top_lightning();
-    val = temp;
+    incomingByte = temp;
     skip = true;
   } else if (incomingByte == "4") {
     strip_middle_lightning();
-    val = temp;
+    incomingByte = temp;
     skip = true;
   } else if (incomingByte == "5") {
     strip_bottom_lightning();
-    val = temp;
+    incomingByte = temp;
     skip = true;
   } else if (incomingByte == "6") {
     mixed_strip_lightning();
     mixed_strip_lightning();
-    val = temp;
+    incomingByte = temp;
     skip = true;
   } else if (incomingByte == "7") {
     full_bright_state(255, 0, 0, 0);
