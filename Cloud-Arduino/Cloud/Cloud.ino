@@ -32,6 +32,8 @@ int gamma[] = {
 String incomingByte;   // for incoming serial data
 int val = 0;
 int temp = 0;
+bool skip = true;
+int r, g, b;
 void setup() {
   Serial.begin(9600);
   // This is for Trinket 5V 16MHz, you can remove these three lines if you are not using a Trinket
@@ -46,10 +48,14 @@ void setup() {
 
 void loop() {
   temp = val; // store current value to restore
+  if (!skip) {
+    while(!(Serial.available() > 0)) ;
+  }
+  skip = false;
+  // read the incoming byte:
   if (Serial.available() > 0) {
-     // read the incoming byte:
-     incomingByte = Serial.readString();
-     val = incomingByte.toInt();
+    incomingByte = Serial.readString();
+    val = incomingByte.toInt();
   }
   switch(val) {
     case 0: //don't reset val, this state persists
@@ -61,23 +67,28 @@ void loop() {
     case 2:
       full_strip_lightning();
       val = temp;
+      skip = true;
       break;
     case 3:
       strip_top_lightning();
       val = temp;
+      skip = true;
       break;
     case 4:
       strip_middle_lightning();
       val = temp;
+      skip = true;
       break;
     case 5:
       strip_bottom_lightning();
       val = temp;
+      skip = true;
       break;
     case 6:
       mixed_strip_lightning();
       mixed_strip_lightning();
       val = temp;
+      skip = true;
       break;
     case 7: //don't reset val, this state persists
       full_bright_state(255, 0, 0, 0);
