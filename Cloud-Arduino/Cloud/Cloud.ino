@@ -46,11 +46,6 @@ void setup() {
 }
 
 void loop() {
-  temp = incomingByte; // store current value to restore
-  if (!skip) {
-    while(!(Serial.available() > 0)) ;
-  }
-  skip = false;
   // read the incoming byte:
   if (Serial.available() > 0) {
     incomingByte = Serial.readString();
@@ -63,25 +58,15 @@ void loop() {
     full_bright_state(255, 255, 255, 255);
   } else if (incomingByte == "2") {
     full_strip_lightning();
-    incomingByte = temp;
-    skip = true;
   } else if (incomingByte == "3") {
     strip_top_lightning();
-    incomingByte = temp;
-    skip = true;
   } else if (incomingByte == "4") {
     strip_middle_lightning();
-    incomingByte = temp;
-    skip = true;
   } else if (incomingByte == "5") {
     strip_bottom_lightning();
-    incomingByte = temp;
-    skip = true;
   } else if (incomingByte == "6") {
     mixed_strip_lightning();
     mixed_strip_lightning();
-    incomingByte = temp;
-    skip = true;
   } else if (incomingByte == "7") {
     full_bright_state(255, 0, 0, 0);
   } else if (incomingByte == "8") {
