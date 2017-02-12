@@ -55,104 +55,170 @@ void loop() {
   // read the incoming byte:
   if (Serial.available() > 0) {
     incomingByte = Serial.readString();
-    val = incomingByte.toInt();
+    incomingByte.trim();
   }
-  switch(val) {
-    case 0: //don't reset val, this state persists
-      dim_state();
-      break;
-     case 1: //don't reset val, this state persists
-      full_bright_state(255, 255, 255, 255);
-      break;
-    case 2:
-      full_strip_lightning();
-      val = temp;
-      skip = true;
-      break;
-    case 3:
-      strip_top_lightning();
-      val = temp;
-      skip = true;
-      break;
-    case 4:
-      strip_middle_lightning();
-      val = temp;
-      skip = true;
-      break;
-    case 5:
-      strip_bottom_lightning();
-      val = temp;
-      skip = true;
-      break;
-    case 6:
-      mixed_strip_lightning();
-      mixed_strip_lightning();
-      val = temp;
-      skip = true;
-      break;
-    case 7: //don't reset val, this state persists
-      full_bright_state(255, 0, 0, 0);
-      break;
-    case 8: //don't reset val, this state persists
-      full_bright_state(0, 255, 0, 0);
-      break;
-    case 9: //don't reset val, this state persists
-      full_bright_state(0, 0, 255, 0);
-      break;
-    case 10: //don't reset val, this state persists
-      full_bright_state(255, 0, 0, 0);
-      delay(1000);
-      full_bright_state(0, 255, 0, 0);
-      delay(1000);
-      full_bright_state(0, 0, 255, 0);
-      delay(1000);
-      break;
-    case 11: //don't reset val, this state persists
-      full_bright_state(255, 0, 255, 0);
-      break;
-     case 12: // fast rainbow
-      rainbow(1,1);  //don't reset val, this state persists
-      break;
-    case 13: // medium rainbow
-      rainbow(5,1);  //don't reset val, this state persists
-      break;
-    case 14: // slow rainbow
-      rainbow(15,1); //don't reset val, this state persists
-      break;
-    case 15: // Yellow 
-      full_bright_state(255,200,0,40);
-      break;
-    case 16: // orange (sunrise)
-      full_bright_state(255,90,0,20);
-      break;
-    case 17: // orange (sunset)
-      full_bright_state(255,35,0,10);
-      break;
-    case 18: // light blue (rain)
-      full_bright_state(0,35,255,40);
-      break;
-    case 255:
-      while(!(Serial.available() > 0)) ;
-      // read the incoming byte:
-      incomingByte = Serial.readString();
-      r = incomingByte.toInt();
-      
-      while(!(Serial.available() > 0)) ;
-      // read the incoming byte:
-      incomingByte = Serial.readString();
-      g = incomingByte.toInt();
-      
-      while(!(Serial.available() > 0)) ;
-      // read the incoming byte:
-      incomingByte = Serial.readString();
-      b = incomingByte.toInt();
-      
-      full_bright_state(r, g, b, 0);
-      break;
-    default:
-      off();
-      break;
+
+  if (incomingByte == "0") { //don't reset val, this state persists
+    dim_state();
+  } else if (incomingByte == "1") { //don't reset val, this state persists
+    full_bright_state(255, 255, 255, 255);
+  } else if (incomingByte == "2") {
+    full_strip_lightning();
+    val = temp;
+    skip = true;
+  } else if (incomingByte == "3") {
+    strip_top_lightning();
+    val = temp;
+    skip = true;
+  } else if (incomingByte == "4") {
+    strip_middle_lightning();
+    val = temp;
+    skip = true;
+  } else if (incomingByte == "5") {
+    strip_bottom_lightning();
+    val = temp;
+    skip = true;
+  } else if (incomingByte == "6") {
+    mixed_strip_lightning();
+    mixed_strip_lightning();
+    val = temp;
+    skip = true;
+  } else if (incomingByte == "7") {
+    full_bright_state(255, 0, 0, 0);
+  } else if (incomingByte == "8") {
+    full_bright_state(0, 255, 0, 0);
+  } else if (incomingByte == "9") {
+    full_bright_state(0, 0, 255, 0);
+  } else if (incomingByte == "10") {
+    full_bright_state(255, 0, 0, 0);
+    delay(1000);
+    full_bright_state(0, 255, 0, 0);
+    delay(1000);
+    full_bright_state(0, 0, 255, 0);
+    delay(1000);
+  } else if (incomingByte == "11") {
+    full_bright_state(255, 0, 255, 0);
+  } else if (incomingByte == "12") {
+    rainbow(1,1);  //don't reset val, this state persists
+  } else if (incomingByte == "13") {
+    rainbow(5,1);  //don't reset val, this state persists
+  } else if (incomingByte == "14") {
+    rainbow(15,1); //don't reset val, this state persists
+  } else if (incomingByte == "15") {
+    full_bright_state(255,200,0,40);
+  } else if (incomingByte == "16") {
+    full_bright_state(255,90,0,20);
+  } else if (incomingByte == "17") {
+    full_bright_state(255,35,0,10);
+  } else if (incomingByte == "18") {
+    full_bright_state(0,35,255,40);
+  } else if (incomingByte[0] == '#') {
+    r = convert(incomingByte[1], incomingByte[2]);
+    g = convert(incomingByte[3], incomingByte[4]);
+    b = convert(incomingByte[5], incomingByte[6]);
+    full_bright_state(r, g, b, 0);
+  } else {
+    off();
   }
+}
+
+int convert(char a, char b) {
+  int r = 0x0;
+  switch (a) {
+    case '1':
+    r += 16 * 1;
+    break;
+    case '2':
+    r += 16 * 2;
+    break;
+    case '3':
+    r += 16 * 3;
+    break;
+    case '4':
+    r += 16 * 4;
+    break;
+    case '5':
+    r += 16 * 5;
+    break;
+    case '6':
+    r += 16 * 6;
+    break;
+    case '7':
+    r += 16 * 7;
+    break;
+    case '8':
+    r += 16 * 8;
+    break;
+    case '9':
+    r += 16 * 9;
+    break;
+    case 'A':
+    r += 16 * 10;
+    break;
+    case 'B':
+    r += 16 * 11;
+    break;
+    case 'C':
+    r += 16 * 12;
+    break;
+    case 'D':
+    r += 16 * 13;
+    break;
+    case 'E':
+    r += 16 * 14;
+    break;
+    case 'F':
+    r += 16 * 15;
+    break;
+  }
+  switch (b) {
+    case '1':
+    r += 1;
+    break;
+    case '2':
+    r += 2;
+    break;
+    case '3':
+    r += 3;
+    break;
+    case '4':
+    r += 4;
+    break;
+    case '5':
+    r += 5;
+    break;
+    case '6':
+    r += 6;
+    break;
+    case '7':
+    r += 7;
+    break;
+    case '8':
+    r += 8;
+    break;
+    case '9':
+    r += 9;
+    break;
+    case 'A':
+    r += 10;
+    break;
+    case 'B':
+    r += 11;
+    break;
+    case 'C':
+    r += 12;
+    break;
+    case 'D':
+    r += 13;
+    break;
+    case 'E':
+    r += 14;
+    break;
+    case 'F':
+    r += 15;
+    break;
+  }
+  return r;
 }
 
 void off() {
