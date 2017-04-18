@@ -3,15 +3,12 @@
  */
 const express = require('express');
 const bodyParser = require('body-parser');
-//const serialport = require('serialport');
+const serialport = require('serialport');
 const schedule = require('node-schedule');
 const weather = require('openweather-node');
-<<<<<<< HEAD
+
 const port = new serialport('/dev/ttyUSB0', 9600);
 const sleep = require('sleep');
-=======
-//const port = new serialport('/dev/ttyUSB0', 9600);
->>>>>>> af550bc4bc347c3c210f1a6e51905e765ff08666
 
 // Global variable to turn checking weather on and off
 var getWeather = (process.argv[2] == 'debug') ? false : true;
