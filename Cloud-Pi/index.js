@@ -55,13 +55,13 @@ var event = schedule.scheduleJob('*/60 * * * * *', function() {
         }
       }
       console.log('Changing mode to: ' + data);
-      //port.write(data);
+      port.write(data);
     });
   }
   // If it is past bedtime, overwrite everything
   if (quietHours && (currentHour >= quietStart || currentHour <= quietEnd)) {
     console.log('Lights out');
-    //port.write('-1');
+    port.write('-1');
   }
 
 });
