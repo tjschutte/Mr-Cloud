@@ -1,0 +1,10 @@
+{
+    "timerMode" : false,
+    "weatherMode": true,
+    "weatherAPIKey": "bb3c7f07ddd4adcbee99aa50c6badef6",
+    "weatherCulture":"en",
+    "weatherForecastType":"daily",
+    "quietStart": 22,
+    "quietEnd": 6,
+    "location": "Seattle"
+}
