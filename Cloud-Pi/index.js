@@ -72,7 +72,7 @@ var event = schedule.scheduleJob('*/60 * * * * *', function() {
     });
   }
   // If it is past bedtime, overwrite everything
-  if (isQuietHours()) {
+  if (isQuietHours() && quietHours) {
     console.log('Lights out')
     data = '-1';
   }
@@ -113,8 +113,10 @@ app.post('/', function postIndex(req, res) {
         weatherMode = true;
         break;
       case 2000:
+        quietHours = false;
         break;
       case 2001:
+        quietHours = true;
         break;
       default:
         port.write(req.body.mode.mode);
